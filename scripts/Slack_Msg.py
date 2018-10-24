@@ -1,0 +1,124 @@
+#!/usr/bin/python
+import urllib2
+import requests
+import json
+import sys
+import os
+import time
+
+#Loads the environment variable as JSON structure
+#We will use this later
+JSON_Data = json.dumps(dict(**os.environ), sort_keys=True, indent=4)
+EnvData_dict = json.loads(JSON_Data)
+
+#Building a Slack Pre-Reqs and the message
+Addressed_Channel_Msg = ("{\"channel\":\"#bot_testgrounds\", "
+"\"username\":\"B-MO\", "
+"\"attachments\":[ ")
+
+#Time should be handled as so, YYYY-MM-DD
+#OK Bot Message
+OK_Msg = ("{" + \
+"\"fallback\": \"Alert - " + EnvData_dict["_SEVERITY"] + "\", " + \
+"\"color\": \"good\", " + \
+"\"fields\":" + \
+"[" + \
+"{" + \
+"\"title\": \"Severity : " + EnvData_dict["_SEVERITY"] + " | Date : " + time.strftime("%Y-%m-%d") +  " | Time : " + time.strftime("%H:%M:%S") +  "\", " + \
+"\"value\": \"Value : " + EnvData_dict["_VALUE"] + "\n" + "Row.Colum : " + EnvData_dict["_VARIABLE"] + "\n" + "Gateway : " + EnvData_dict["_GATEWAY"] + "\n" + \
+"Probe : " + EnvData_dict["_PROBE"] + "\n" + "Sampler : " + EnvData_dict["_SAMPLER"] + "\n" + "Managed Entity : " + EnvData_dict["_MANAGED_ENTITY"] + \
+ "\", " + \
+"\"short\": false " + \
+"}" + \
+"]" + \
+"}")
+
+#Warning Bot Message
+WARNING_Msg = ("{" + \
+"\"fallback\": \"Alert - " + EnvData_dict["_SEVERITY"] + "\", " + \
+"\"color\": \"warning\", " + \
+"\"fields\":" + \
+"[" + \
+"{" + \
+"\"title\": \"Severity : " + EnvData_dict["_SEVERITY"] + " | Date : " + time.strftime("%Y-%m-%d") +  " | Time : " + time.strftime("%H:%M:%S") +  "\", " + \
+"\"value\": \"Value : " + EnvData_dict["_VALUE"] + "\n" + "Row.Colum : " + EnvData_dict["_VARIABLE"] + "\n" + "Gateway : " + EnvData_dict["_GATEWAY"] + "\n" + \
+"Probe : " + EnvData_dict["_PROBE"] + "\n" + "Sampler : " + EnvData_dict["_SAMPLER"] + "\n" + "Managed Entity : " + EnvData_dict["_MANAGED_ENTITY"] + \
+ "\", " + \
+"\"short\": false " + \
+"}" + \
+"]" + \
+"}")
+
+#Critical Bot Message
+CRITICAL_Msg = ("{" + \
+"\"fallback\": \"Alert - " + EnvData_dict["_SEVERITY"] + "\", " + \
+"\"color\": \"danger\", " + \
+"\"fields\":" + \
+"[" + \
+"{" + \
+"\"title\": \"Severity : " + EnvData_dict["_SEVERITY"] + " | Date : " + time.strftime("%Y-%m-%d") +  " | Time : " + time.strftime("%H:%M:%S") +  "\", " + \
+"\"value\": \"Value : " + EnvData_dict["_VALUE"] + "\n" + "Row.Colum : " + EnvData_dict["_VARIABLE"] + "\n" + "Gateway : " + EnvData_dict["_GATEWAY"] + "\n" + \
+"Probe : " + EnvData_dict["_PROBE"] + "\n" + "Sampler : " + EnvData_dict["_SAMPLER"] + "\n" + "Managed Entity : " + EnvData_dict["_MANAGED_ENTITY"] + \
+ "\", " + \
+"\"short\": false " + \
+"}" + \
+"]" + \
+"}")
+
+#Close the message
+Close_Msg = "]}"
+
+#After grabbing the environment variables
+#Check on the severity environment variable and
+#form the message.
+if (EnvData_dict["_SEVERITY"] == "WARNING"):
+    Send_Msg = Addressed_Channel_Msg + WARNING_Msg + Close_Msg
+if (EnvData_dict["_SEVERITY"] == "OK"):
+    Send_Msg = Addressed_Channel_Msg + OK_Msg + Close_Msg
+if (EnvData_dict["_SEVERITY"] == "CRITICAL"):
+    Send_Msg = Addressed_Channel_Msg + CRITICAL_Msg + Close_Msg
+
+#We're using Slack JSON API
+#Doing our POST to the URL
+#Set the webhook_url to the one provided by Slack when you create the webhook at https://my.slack.com/services/new/incoming-webhook/
+webhook_url = 'https://hooks.slack.com/services/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'
+
+#webhook_url = 'https://hooks.slack.com/services/XXXXXXXXX/XXXXXXXXX/xxxxxxxxxxxxxxxxx'
+
+#Here we will build the response
+response = requests.post( webhook_url, data=Send_Msg, headers={'Content-Type': 'application/json'} )
+if response.status_code != 200:
+    raise ValueError(
+        'Request to slack returned an error %s, the response is:\n%s'
+        % (response.status_code, response.text)
+    )
+
+#Writing the whole Env Vars to file for sanity checks
+#with open('/export/home/epayano/geneos/scripts/environ.json', 'w') as f:
+#    json.dump(dict(**os.environ), f, sort_keys=True, indent=4)
+#f.close()
+
+#We're grabbing attributes at a granular level
+f = open('/export/home/epayano/geneos/scripts/environ.json', 'w')
+# f.write( EnvData_dict["App"] )
+f.write('\n')
+#Write out the metadata
+f.write(JSON_Data)
+#JSON Array Size
+f.write('\n')
+f.write('JSON array length is : ')
+#size of the array convert to string
+f.write(str(len(EnvData_dict)))
+f.write('\n')
+#Server Response
+f.write('server status_code : ')
+f.write(str(response.status_code))
+f.write('\n')
+f.write('server reason : ')
+f.write(str(response.reason))
+f.write('\n')
+f.write('server response text : ')
+f.write(str(response.text))
+f.write('\n')
+#Close the file up
+f.close()
