@@ -1,23 +1,43 @@
 #!/usr/bin/python
-import urllib2
-import requests
-import json
-import sys
-import os
-import time
+import requests, base64, json, sys, argparse, os, time
+from argparse import RawTextHelpFormatter
+
+if sys.version_info[0] < 3:
+    import urllib2
+else:
+    import urllib3
 
 #Loads the environment variable as JSON structure
 #We will use this later
 JSON_Data = json.dumps(dict(**os.environ), sort_keys=True, indent=4)
 EnvData_dict = json.loads(JSON_Data)
 
+# Variables needed
+# EnvData_dict["_SLACK_CHANNEL"]
+# EnvData_dict["_SLACK_BOTNAME"]
+# EnvData_dict["_SLACK_HOOK"]
+# EnvData_dict["_SLACK_MSG_RECEIPT"]
+
+parser = argparse.ArgumentParser( description = "Outbound SlackBot Integration" , formatter_class=RawTextHelpFormatter)
+
+# Typical operations for PagerDuty
+parser.add_argument( "-wh", "--webhook", help = "Webhook URL for sending message to",  type=str)
+
+# global args
+args = parser.parse_args()
+
+if (args.webhook):
+    webhook_url =  (args.webhook)
+else:
+    webhook_url =  EnvData_dict["_SLACK_HOOK"]
+
 #Building a Slack Pre-Reqs and the message
-Addressed_Channel_Msg = ("{\"channel\":\"#bot_testgrounds\", "
-"\"username\":\"B-MO\", "
+Addressed_Channel_Msg = ("{\"channel\":\"" + EnvData_dict["_SLACK_CHANNEL"] + "\", "
+"\"username\":\"" + EnvData_dict["_SLACK_BOTNAME"] + "\", "
 "\"attachments\":[ ")
 
-#Time should be handled as so, YYYY-MM-DD
-#OK Bot Message
+# Time should be handled as so, YYYY-MM-DD
+# OK Bot Message
 OK_Msg = ("{" + \
 "\"fallback\": \"Alert - " + EnvData_dict["_SEVERITY"] + "\", " + \
 "\"color\": \"good\", " + \
@@ -33,7 +53,7 @@ OK_Msg = ("{" + \
 "]" + \
 "}")
 
-#Warning Bot Message
+# Warning Bot Message
 WARNING_Msg = ("{" + \
 "\"fallback\": \"Alert - " + EnvData_dict["_SEVERITY"] + "\", " + \
 "\"color\": \"warning\", " + \
@@ -49,7 +69,7 @@ WARNING_Msg = ("{" + \
 "]" + \
 "}")
 
-#Critical Bot Message
+# Critical Bot Message
 CRITICAL_Msg = ("{" + \
 "\"fallback\": \"Alert - " + EnvData_dict["_SEVERITY"] + "\", " + \
 "\"color\": \"danger\", " + \
@@ -65,7 +85,7 @@ CRITICAL_Msg = ("{" + \
 "]" + \
 "}")
 
-#Close the message
+# Close the message
 Close_Msg = "]}"
 
 #After grabbing the environment variables
@@ -78,12 +98,11 @@ if (EnvData_dict["_SEVERITY"] == "OK"):
 if (EnvData_dict["_SEVERITY"] == "CRITICAL"):
     Send_Msg = Addressed_Channel_Msg + CRITICAL_Msg + Close_Msg
 
-#We're using Slack JSON API
-#Doing our POST to the URL
-#Set the webhook_url to the one provided by Slack when you create the webhook at https://my.slack.com/services/new/incoming-webhook/
-webhook_url = 'https://hooks.slack.com/services/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'
-
-#webhook_url = 'https://hooks.slack.com/services/XXXXXXXXX/XXXXXXXXX/xxxxxxxxxxxxxxxxx'
+# We're using Slack JSON API
+# Doing our POST to the URL
+# Set the webhook_url to the one provided by Slack when you create the webhook at https://my.slack.com/services/new/incoming-webhook/
+# webhook_url =  EnvData_dict["_SLACK_HOOK"]
+# webhook_url = 'https://hooks.slack.com/services/XXXXXXXXX/XXXXXXXXX/xxxxxxxxxxxxxxxxx'
 
 #Here we will build the response
 response = requests.post( webhook_url, data=Send_Msg, headers={'Content-Type': 'application/json'} )
@@ -93,32 +112,30 @@ if response.status_code != 200:
         % (response.status_code, response.text)
     )
 
-#Writing the whole Env Vars to file for sanity checks
-#with open('/export/home/epayano/geneos/scripts/environ.json', 'w') as f:
-#    json.dump(dict(**os.environ), f, sort_keys=True, indent=4)
-#f.close()
-
-#We're grabbing attributes at a granular level
-f = open('/export/home/epayano/geneos/scripts/environ.json', 'w')
-# f.write( EnvData_dict["App"] )
-f.write('\n')
-#Write out the metadata
-f.write(JSON_Data)
-#JSON Array Size
-f.write('\n')
-f.write('JSON array length is : ')
-#size of the array convert to string
-f.write(str(len(EnvData_dict)))
-f.write('\n')
-#Server Response
-f.write('server status_code : ')
-f.write(str(response.status_code))
-f.write('\n')
-f.write('server reason : ')
-f.write(str(response.reason))
-f.write('\n')
-f.write('server response text : ')
-f.write(str(response.text))
-f.write('\n')
-#Close the file up
-f.close()
+# Writing the whole Env Vars to file for sanity checks
+if "_SLACK_MSG_RECEIPT" in EnvData_dict:
+    #We're grabbing attributes at a granular level
+    # f = open('/export/home/epayano/geneos/scripts/environ.json', 'w')
+    f = open(EnvData_dict["_SLACK_MSG_RECEIPT"], 'w')
+    # f.write( EnvData_dict["App"] )
+    f.write('\n')
+    #Write out the metadata
+    f.write(JSON_Data)
+    #JSON Array Size
+    f.write('\n')
+    f.write('JSON array length is : ')
+    #size of the array convert to string
+    f.write(str(len(EnvData_dict)))
+    f.write('\n')
+    #Server Response
+    f.write('server status_code : ')
+    f.write(str(response.status_code))
+    f.write('\n')
+    f.write('server reason : ')
+    f.write(str(response.reason))
+    f.write('\n')
+    f.write('server response text : ')
+    f.write(str(response.text))
+    f.write('\n')
+    #Close the file up
+    f.close()

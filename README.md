@@ -2,7 +2,7 @@
 The ability to automated geneos alert messages into your Slack environment.
 
 ### Contents
-- [Geneos Configuration](geneos/README.md)
+- [Geneos Configuration](include/README.md)
 
 #### Requirements
 You must have python 2.7 or higher to install:
@@ -13,4 +13,4 @@ This script does depend on the requests module:
 
 `$ pip install requests`
 
-And finally you need to have the `webhook_url`, generated from your Slack environment.
+And finally you need to have the `webhook_url`, generated from your Slack environment. Which can be found [here](https://api.slack.com/incoming-webhooks).
