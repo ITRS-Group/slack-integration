@@ -16,3 +16,5 @@ You may need to FTP the script. Just be sure to have the script somewhere that i
   + Step 2 - With the Gateway Setup Editor opened, with in the Actions section, configure your path to the script. Here you can supply Slack’s `webhook_url` as a command-line option.
 
   + Step 3 - Configure your rule to use `Slack_Call` example
+
+  + Step 4 - Configure the `Slack` Environment table to your slack webhook settings
