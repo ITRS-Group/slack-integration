@@ -22,6 +22,7 @@ parser = argparse.ArgumentParser( description = "Outbound SlackBot Integration" 
 
 # Typical operations for PagerDuty
 parser.add_argument( "-wh", "--webhook", help = "Webhook URL for sending message to",  type=str)
+parser.add_argument( "-ch", "--channel", help = "Slack Channel or user for sending message to",  type=str)
 
 # global args
 args = parser.parse_args()
@@ -31,9 +32,19 @@ if (args.webhook):
 else:
     webhook_url =  EnvData_dict["_SLACK_HOOK"]
 
+if (args.channel):
+    channel =  (args.channel)
+else:
+    channel =  EnvData_dict["_SLACK_CHANNEL"]
+
+if "_SLACK_BOTNAME" in EnvData_dict:
+    botname = EnvData_dict["_SLACK_BOTNAME"]
+else:
+    botname = 'Geneos_Slack_Alerts'
+
 #Building a Slack Pre-Reqs and the message
-Addressed_Channel_Msg = ("{\"channel\":\"" + EnvData_dict["_SLACK_CHANNEL"] + "\", "
-"\"username\":\"" + EnvData_dict["_SLACK_BOTNAME"] + "\", "
+Addressed_Channel_Msg = ("{\"channel\":\"" + channel + "\", "
+"\"username\":\"" + botname + "\", "
 "\"attachments\":[ ")
 
 # Time should be handled as so, YYYY-MM-DD
