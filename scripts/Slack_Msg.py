@@ -117,11 +117,6 @@ if (EnvData_dict["_SEVERITY"] == "CRITICAL"):
 
 #Here we will build the response
 response = requests.post( webhook_url, data=Send_Msg, headers={'Content-Type': 'application/json'} )
-if response.status_code != 200:
-    raise ValueError(
-        'Request to slack returned an error %s, the response is:\n%s'
-        % (response.status_code, response.text)
-    )
 
 # Writing the whole Env Vars to file for sanity checks
 if "_SLACK_MSG_RECEIPT" in EnvData_dict:
@@ -150,3 +145,9 @@ if "_SLACK_MSG_RECEIPT" in EnvData_dict:
     f.write('\n')
     #Close the file up
     f.close()
+
+if response.status_code != 200:
+    raise ValueError(
+        'Request to slack returned an error %s, the response is:\n%s'
+        % (response.status_code, response.text)
+    )
