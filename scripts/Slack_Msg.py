@@ -22,6 +22,7 @@ parser = argparse.ArgumentParser( description = "Outbound SlackBot Integration" 
 
 # Typical operations for PagerDuty
 parser.add_argument( "-wh", "--webhook", help = "Webhook URL for sending message to",  type=str)
+parser.add_argument( "-ch", "--channel", help = "Slack Channel or user for sending message to",  type=str)
 
 # global args
 args = parser.parse_args()
@@ -31,9 +32,19 @@ if (args.webhook):
 else:
     webhook_url =  EnvData_dict["_SLACK_HOOK"]
 
+if (args.channel):
+    channel =  (args.channel)
+else:
+    channel =  EnvData_dict["_SLACK_CHANNEL"]
+
+if "_SLACK_BOTNAME" in EnvData_dict:
+    botname = EnvData_dict["_SLACK_BOTNAME"]
+else:
+    botname = 'Geneos_Slack_Alerts'
+
 #Building a Slack Pre-Reqs and the message
-Addressed_Channel_Msg = ("{\"channel\":\"" + EnvData_dict["_SLACK_CHANNEL"] + "\", "
-"\"username\":\"" + EnvData_dict["_SLACK_BOTNAME"] + "\", "
+Addressed_Channel_Msg = ("{\"channel\":\"" + channel + "\", "
+"\"username\":\"" + botname + "\", "
 "\"attachments\":[ ")
 
 # Time should be handled as so, YYYY-MM-DD
@@ -106,11 +117,6 @@ if (EnvData_dict["_SEVERITY"] == "CRITICAL"):
 
 #Here we will build the response
 response = requests.post( webhook_url, data=Send_Msg, headers={'Content-Type': 'application/json'} )
-if response.status_code != 200:
-    raise ValueError(
-        'Request to slack returned an error %s, the response is:\n%s'
-        % (response.status_code, response.text)
-    )
 
 # Writing the whole Env Vars to file for sanity checks
 if "_SLACK_MSG_RECEIPT" in EnvData_dict:
@@ -139,3 +145,9 @@ if "_SLACK_MSG_RECEIPT" in EnvData_dict:
     f.write('\n')
     #Close the file up
     f.close()
+
+if response.status_code != 200:
+    raise ValueError(
+        'Request to slack returned an error %s, the response is:\n%s'
+        % (response.status_code, response.text)
+    )
