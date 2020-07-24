@@ -56,7 +56,7 @@ OK_Msg = ("{" + \
 "[" + \
 "{" + \
 "\"title\": \"Severity : " + EnvData_dict["_SEVERITY"] + " | Date : " + time.strftime("%Y-%m-%d") +  " | Time : " + time.strftime("%H:%M:%S") +  "\", " + \
-"\"value\": \"Value : " + EnvData_dict["_VALUE"] + "\n" + "Row.Colum : " + EnvData_dict["_VARIABLE"] + "\n" + "Gateway : " + EnvData_dict["_GATEWAY"] + "\n" + \
+"\"value\": \"Value : " + EnvData_dict["_VALUE"] + "\n" + "Row.Column : " + EnvData_dict["_VARIABLE"] + "\n" + "Gateway : " + EnvData_dict["_GATEWAY"] + "\n" + \
 "Probe : " + EnvData_dict["_PROBE"] + "\n" + "Sampler : " + EnvData_dict["_SAMPLER"] + "\n" + "Managed Entity : " + EnvData_dict["_MANAGED_ENTITY"] + \
  "\", " + \
 "\"short\": false " + \
@@ -72,7 +72,7 @@ WARNING_Msg = ("{" + \
 "[" + \
 "{" + \
 "\"title\": \"Severity : " + EnvData_dict["_SEVERITY"] + " | Date : " + time.strftime("%Y-%m-%d") +  " | Time : " + time.strftime("%H:%M:%S") +  "\", " + \
-"\"value\": \"Value : " + EnvData_dict["_VALUE"] + "\n" + "Row.Colum : " + EnvData_dict["_VARIABLE"] + "\n" + "Gateway : " + EnvData_dict["_GATEWAY"] + "\n" + \
+"\"value\": \"Value : " + EnvData_dict["_VALUE"] + "\n" + "Row.Column : " + EnvData_dict["_VARIABLE"] + "\n" + "Gateway : " + EnvData_dict["_GATEWAY"] + "\n" + \
 "Probe : " + EnvData_dict["_PROBE"] + "\n" + "Sampler : " + EnvData_dict["_SAMPLER"] + "\n" + "Managed Entity : " + EnvData_dict["_MANAGED_ENTITY"] + \
  "\", " + \
 "\"short\": false " + \
@@ -88,7 +88,7 @@ CRITICAL_Msg = ("{" + \
 "[" + \
 "{" + \
 "\"title\": \"Severity : " + EnvData_dict["_SEVERITY"] + " | Date : " + time.strftime("%Y-%m-%d") +  " | Time : " + time.strftime("%H:%M:%S") +  "\", " + \
-"\"value\": \"Value : " + EnvData_dict["_VALUE"] + "\n" + "Row.Colum : " + EnvData_dict["_VARIABLE"] + "\n" + "Gateway : " + EnvData_dict["_GATEWAY"] + "\n" + \
+"\"value\": \"Value : " + EnvData_dict["_VALUE"] + "\n" + "Row.Column : " + EnvData_dict["_VARIABLE"] + "\n" + "Gateway : " + EnvData_dict["_GATEWAY"] + "\n" + \
 "Probe : " + EnvData_dict["_PROBE"] + "\n" + "Sampler : " + EnvData_dict["_SAMPLER"] + "\n" + "Managed Entity : " + EnvData_dict["_MANAGED_ENTITY"] + \
  "\", " + \
 "\"short\": false " + \
