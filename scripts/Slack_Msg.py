@@ -17,6 +17,12 @@ EnvData_dict = json.loads(JSON_Data)
 # EnvData_dict["_SLACK_BOTNAME"]
 # EnvData_dict["_SLACK_HOOK"]
 # EnvData_dict["_SLACK_MSG_RECEIPT"]
+fdmgkojevfht43h8tbv54yn89540v6yj45t9utgf4e3vf6y-mgdfujhigretngkrednfdrged
+hrt
+rtyuytrjytjyrjihtrey7543vih9er5ydf
+fdmgkojevfht43h8tbv54yn89540v6yj45t9utgf4e3vf6y-mgdfujhigretngkrednfdrgedhtr5b8yb954uhgbe
+
+fudfsdfrdtv
 
 parser = argparse.ArgumentParser( description = "Outbound SlackBot Integration" , formatter_class=RawTextHelpFormatter)
 
