@@ -18,6 +18,9 @@ EnvData_dict = json.loads(JSON_Data)
 # EnvData_dict["_SLACK_HOOK"]
 # EnvData_dict["_SLACK_MSG_RECEIPT"]
 
+# Variables optional
+# EnvData_dict["_SLACK_COMMENT"]
+
 parser = argparse.ArgumentParser( description = "Outbound SlackBot Integration" , formatter_class=RawTextHelpFormatter)
 
 # Typical operations for PagerDuty
@@ -42,6 +45,11 @@ if "_SLACK_BOTNAME" in EnvData_dict:
 else:
     botname = 'Geneos_Slack_Alerts'
 
+if "_SLACK_COMMENT" in EnvData_dict:
+   slack_comment = EnvData_dict["_SLACK_COMMENT"]
+else:
+   slack_comment = ''
+
 #Building a Slack Pre-Reqs and the message
 Addressed_Channel_Msg = ("{\"channel\":\"" + channel + "\", "
 "\"username\":\"" + botname + "\", "
@@ -58,7 +66,7 @@ OK_Msg = ("{" + \
 "\"title\": \"Severity : " + EnvData_dict["_SEVERITY"] + " | Date : " + time.strftime("%Y-%m-%d") +  " | Time : " + time.strftime("%H:%M:%S") +  "\", " + \
 "\"value\": \"Value : " + EnvData_dict["_VALUE"] + "\n" + "Row.Column : " + EnvData_dict["_VARIABLE"] + "\n" + "Gateway : " + EnvData_dict["_GATEWAY"] + "\n" + \
 "Probe : " + EnvData_dict["_PROBE"] + "\n" + "Sampler : " + EnvData_dict["_SAMPLER"] + "\n" + "Managed Entity : " + EnvData_dict["_MANAGED_ENTITY"] + \
-"\n Comments: " + EnvData_dict["_SLACK_COMMENT"] + \
+"\n Comments: " + slack_comment + \
  "\", " + \
 "\"short\": false " + \
 "}" + \
@@ -75,7 +83,7 @@ WARNING_Msg = ("{" + \
 "\"title\": \"Severity : " + EnvData_dict["_SEVERITY"] + " | Date : " + time.strftime("%Y-%m-%d") +  " | Time : " + time.strftime("%H:%M:%S") +  "\", " + \
 "\"value\": \"Value : " + EnvData_dict["_VALUE"] + "\n" + "Row.Column : " + EnvData_dict["_VARIABLE"] + "\n" + "Gateway : " + EnvData_dict["_GATEWAY"] + "\n" + \
 "Probe : " + EnvData_dict["_PROBE"] + "\n" + "Sampler : " + EnvData_dict["_SAMPLER"] + "\n" + "Managed Entity : " + EnvData_dict["_MANAGED_ENTITY"] + \
-"\n Comments: " + EnvData_dict["_SLACK_COMMENT"] + \
+"\n Comments: " + slack_comment + \
  "\", " + \
 "\"short\": false " + \
 "}" + \
@@ -92,7 +100,7 @@ CRITICAL_Msg = ("{" + \
 "\"title\": \"Severity : " + EnvData_dict["_SEVERITY"] + " | Date : " + time.strftime("%Y-%m-%d") +  " | Time : " + time.strftime("%H:%M:%S") +  "\", " + \
 "\"value\": \"Value : " + EnvData_dict["_VALUE"] + "\n" + "Row.Column : " + EnvData_dict["_VARIABLE"] + "\n" + "Gateway : " + EnvData_dict["_GATEWAY"] + "\n" + \
 "Probe : " + EnvData_dict["_PROBE"] + "\n" + "Sampler : " + EnvData_dict["_SAMPLER"] + "\n" + "Managed Entity : " + EnvData_dict["_MANAGED_ENTITY"] + \
-"\n Comments: " + EnvData_dict["_SLACK_COMMENT"] + \
+"\n Comments: " + slack_comment + \
  "\", " + \
 "\"short\": false " + \
 "}" + \
