@@ -1,5 +1,5 @@
 # Slack Integration Script Overview  
-The ability to automated geneos alert messages into your Slack environment.
+The ability to automate geneos alert messages into your Slack environment.
 
 ### Contents
 - [Geneos Configuration](include/README.md)
